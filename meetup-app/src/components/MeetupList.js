@@ -9,7 +9,9 @@ import {
   Dimensions,
   ActivityIndicator
 } from 'react-native';
+
 import { navigationOptions } from '../config/navOptions';
+import { db } from '../config/firebase';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,17 +31,13 @@ export default class MeetupList extends Component {
   });
 
   componentWillMount() {
-   setTimeout( ()=> {
-    this.setState({
-      events: [
-        { id:1, title: 'Evento de Meetup 1', groupImage: 'https://secure.meetupstatic.com/photos/event/3/6/4/4/highres_211273892.jpeg', groupName: 'Prueba 1'},
-        { id:2, title: 'Evento de Meetup 2', groupImage: 'https://secure.meetupstatic.com/photos/event/3/6/4/4/highres_211273892.jpeg', groupName: 'Prueba 1'},
-        { id:3, title: 'Evento de Meetup 3', groupImage: 'https://secure.meetupstatic.com/photos/event/3/6/4/4/highres_211273892.jpeg', groupName: 'Prueba 1'},
-        { id:4, title: 'Evento de Meetup 4', groupImage: 'https://secure.meetupstatic.com/photos/event/3/6/4/4/highres_211273892.jpeg', groupName: 'Prueba 1'}
-      ],
-      isLoading: false
-    });
-   },3000);
+   db.ref('/events')
+    .once('value', snapshot => {
+      this.setState({
+        events: this.state.events.concat(snapshot.val()),
+        isLoading: false
+      })
+    })
   }
 
   render() {

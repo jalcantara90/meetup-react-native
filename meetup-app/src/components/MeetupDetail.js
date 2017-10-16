@@ -8,6 +8,9 @@ import {
   StyleSheet 
 } from 'react-native';
 
+import { db } from '../config/firebase';
+import moment from 'moment';
+import 'moment/locale/es';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { navigationOptions } from '../config/navOptions';
@@ -26,9 +29,15 @@ export default class MeetupDetail extends Component {
   });
 
   componentWillMount() {
-    this.setState({
-      event: {id:1, title: 'Evento de Meetup 1', groupImage: 'https://secure.meetupstatic.com/photos/event/3/6/4/4/highres_211273892.jpeg', groupName: 'Prueba 1'}
-    })
+    const { navigation } = this.props;
+    moment().locale('es');
+
+    db.ref(`/events/${navigation.state.params.id}`)
+      .once('value', snapshot => {
+        this.setState({
+          event: snapshot.val()
+        })
+      })
   }
 
   render() {
@@ -39,8 +48,8 @@ export default class MeetupDetail extends Component {
         <View style = { styles.info }>
           <Icon style = { styles.infoIcon } name="calendar-o" size={20} color="grey" />
           <View>
-            <Text style = { styles.InfoText }> { this.state.event.date } </Text>
-            <Text style = { styles.InfoSubText }> { this.state.event.date } </Text>
+            <Text style = { styles.InfoText }> { moment(this.state.event.date).fromNow() } </Text>
+            <Text style = { styles.InfoSubText }> { moment(this.state.event.date).format('dddd, DD MMMM') } </Text>
           </View>
         </View>
         <View style = { styles.info }>

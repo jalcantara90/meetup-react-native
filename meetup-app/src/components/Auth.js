@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
+import { TabNavigator } from 'react-navigation';
 
-import { View, Text } from 'react-native';
+import { navigationOptions } from '../config/navOptions';
+import Login from './Login';
+import SignUp from './SignUp';
 
-export default class Auth extends Component {
-  render() {
-    return(
-      <View>
-        <Text> Auth </Text>
-      </View>
-    )
+const Auth = TabNavigator({
+  Login: { screen: Login },
+  SignUp: { screen: SignUp }
+}, {
+  tabBarOptions: {
+    style: {
+      backgroundColor: 'red',
+      height: 60,
+      paddingVertical: 15
+    },
+    indicatorStyle: {
+      backgroundColor: '#eaeaea'
+    }
+  },
+  navigationOptions: {
+    ...navigationOptions
   }
-}
+})
+
+export default Auth;
